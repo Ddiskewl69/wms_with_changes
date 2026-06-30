@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRN | Nokia WMS</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="../styling/shared.css">
+    <link rel="stylesheet" href="../styling/doa.css">
+
+    <style>
+        /* grn.html page-specific overrides only */
+    </style>
+</head>
+<body>
+<div class="app-wrapper">
+
+    <!-- SIDEBAR -->
+            <aside class="sidebar" data-active-section="transactions">
+
+            <div class="sidebar-header">
+                <a class="brand-mark" href="dashboard.html" aria-label="Nokia WMS Dashboard">
+                    <img src="../assets/logos/logo.png" alt="Nokia Logo">
+                </a>
+                <button id="toggleSidebar" type="button" aria-label="Toggle sidebar">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item" data-section="dashboard">
+                    <a href="dashboard.html"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+                </li>
+
+                                <li class="has-submenu active-parent" data-section="transactions">
+                    <div class="menu-title">
+                        <div><i class="bi bi-arrow-repeat"></i><span>Transactions</span></div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu active">
+                        <li class="active-link"><a href="grn.html">GRN</a></li>
+                        <li><a href="stn.html">STN</a></li>
+                        <li><a href="dc-out.html">DC OUT</a></li>
+                        <li><a href="dc-in.html">DC IN</a></li>
+                        <li><a href="iut.html">IUT</a></li>
+                        <li class="has-sub-submenu" data-page="doa-list">
+                            <a href="doa-list.html" class="d-flex align-items-center justify-content-between pe-2">
+                                <span>DOA List</span>
+                                <i class="bi bi-chevron-down arrow" style="font-size:.72rem;"></i>
+                            </a>
+                            <ul class="sub-submenu">
+                                <li><a href="doa.html">Raise DOA</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="transaction-list.html">Transaction List</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu" data-section="masters">
+                    <div class="menu-title">
+                        <div><i class="bi bi-box-seam"></i><span>Masters</span></div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="project-list.html">Project List</a></li>
+                        <li><a href="cost-center-list.html">Cost Center List</a></li>
+                        <li><a href="goods-master.html">Goods Master</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu" data-section="reports">
+                    <div class="menu-title">
+                        <div><i class="bi bi-file-earmark-bar-graph"></i><span>Stock Reports</span></div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="stock-summary.html">Summary</a></li>
+                        <li><a href="stock-report.html">Report</a></li>
+                        <li><a href="stock-aging.html">Aging</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu" data-section="ledgers">
+                    <div class="menu-title">
+                        <div><i class="bi bi-journal-bookmark"></i><span>Ledgers</span></div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="customer-ledger.html">Customer</a></li>
+                        <li><a href="supplier-ledger.html">Supplier</a></li>
+                        <li><a href="vendor-ledger.html">Vendor</a></li>
+                        <li><a href="store-ledger.html">Store</a></li>
+                        <li><a href="others-sto-ledger.html">Others/STO</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu" data-section="projects">
+                    <div class="menu-title">
+                        <div><i class="bi bi-folder"></i><span>Projects</span></div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="project-list.html">Project List</a></li>
+                        <li><a href="site-list.html">Site List</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item" data-section="documents">
+                    <a href="documents.html"><i class="bi bi-file-earmark-text"></i><span>Documents</span></a>
+                </li>
+
+                <li class="nav-item" data-section="bulk">
+                    <a href="bulk-uploads.html"><i class="bi bi-upload"></i><span>Bulk Uploads</span></a>
+                </li>
+            </ul>
+
+        </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- PAGE TOP -->
+        <div class="page-top" style="align-items:flex-start; margin-bottom:6px;">
+            <div>
+                <!-- Back button shown only in DOA mode, injected by JS -->
+                <div id="grnBackBtn" style="display:none; margin-bottom:8px;">
+                    <a id="grnBackLink" href="doa-list.html" class="btn btn-light btn-sm" style="font-weight:700; border-radius:10px; padding:6px 14px; font-size:.88rem;">
+                        <i class="bi bi-arrow-left me-1"></i>Back to DOA List
+                    </a>
+                </div>
+                <h1 id="grnPageTitle">GRN</h1>
+                <p id="grnPageSubtitle">Goods Receipt Note</p>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+                <!-- Breadcrumb (DOA mode only) -->
+                <nav id="grnBreadcrumb" aria-label="breadcrumb" style="display:none;">
+                    <ol class="breadcrumb mb-0" style="font-size:.88rem;">
+                        <li class="breadcrumb-item"><a href="dashboard.html" style="color:var(--primary); text-decoration:none;">Transactions</a></li>
+                        <li class="breadcrumb-item"><a href="doa-list.html" style="color:var(--primary); text-decoration:none;">DOA List</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">GRN (DOA)</li>
+                    </ol>
+                </nav>
+                <div class="user-profile">
+                    <div class="avatar">KM</div>
+                    <div>
+                        <h6>Kanishak Mahajan</h6>
+                        <small>Warehouse Manager</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOA mode info banner (hidden in independent mode) -->
+        <div class="doa-mode-banner" id="doaModeBanner" style="display:none;">
+            <i class="bi bi-info-circle-fill"></i>
+            <p>
+                <strong>DOA Mode</strong> â€” Fields already captured in the DOA (Project, Customer, Consigner / Consignee, Reporter) are pre-filled and hidden.
+                Only GRN-specific information is required below.
+                DOA reference: <strong id="doaRefLabel">â€“</strong>
+            </p>
+        </div>
+
+        <form id="grnForm">
+
+            <!-- â•â• FIELDS HIDDEN IN DOA MODE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+            <!-- These sections are shown in independent mode and hidden in DOA mode.
+                 In DOA mode the values would come from the backend via the DOA ID.   -->
+
+            <div class="form-card doa-hidden-section">
+                <h3>Basic Information</h3>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Project</label>
+                        <select class="form-select"><option>Select Project</option><option>Nokia-Airtel-2026</option><option>Nokia-Jio-2026</option></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Customer</label>
+                        <select class="form-select"><option>Select Customer</option><option>Bharti Airtel</option><option>Reliance Jio</option><option>Vodafone</option></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">GRN Date</label>
+                        <input type="date" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card doa-hidden-section">
+                <h3>Consigner / Consignee</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Consigner</label>
+                        <input type="text" class="form-control" placeholder="Consigner name">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Consignee</label>
+                        <input type="text" class="form-control" placeholder="Consignee name">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card doa-hidden-section">
+                <h3>Vendor / Supplier</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Vendor Name</label>
+                        <input type="text" class="form-control" placeholder="Vendor name">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Vendor Code</label>
+                        <input type="text" class="form-control" placeholder="Code">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Invoice Number</label>
+                        <input type="text" class="form-control" placeholder="INV-XXXX">
+                    </div>
+                </div>
+            </div>
+
+            <!-- â•â• GRN-SPECIFIC FIELDS (always shown) â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+
+            <div class="form-card">
+                <h3>GRN Details</h3>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">GRN Number</label>
+                        <input type="text" class="form-control" placeholder="Auto-generated" readonly style="background:#f8fafc;">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Purchase Order No.</label>
+                        <input type="text" class="form-control" placeholder="PO-XXXX">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Warehouse Location</label>
+                        <select class="form-select">
+                            <option>Select Location</option>
+                            <option>Delhi Warehouse</option>
+                            <option>Mumbai Warehouse</option>
+                            <option>Bangalore Warehouse</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <h3>Material Details</h3>
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Article ID</label>
+                        <input type="text" class="form-control" placeholder="ART-XXXX">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Serial Number</label>
+                        <input type="text" class="form-control" placeholder="SN-XXXX">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Quantity Received</label>
+                        <input type="number" class="form-control" min="0">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Unit of Measure</label>
+                        <select class="form-select">
+                            <option>Pieces</option>
+                            <option>Boxes</option>
+                            <option>Sets</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Batch Number</label>
+                        <input type="text" class="form-control" placeholder="Batch ID">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Condition</label>
+                        <select class="form-select">
+                            <option>Good</option>
+                            <option>Damaged</option>
+                            <option>Partial</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Received Date</label>
+                        <input type="date" class="form-control">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Remarks</label>
+                        <textarea class="form-control" rows="3" placeholder="Any observations or remarksâ€¦"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <h3>Supporting Documents</h3>
+                <input type="file" class="form-control">
+            </div>
+
+            <div class="submit-section">
+                <button type="button" class="btn btn-light">Save Draft</button>
+                <button type="submit" class="btn btn-primary">Submit GRN</button>
+            </div>
+
+        </form>
+    </main>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../scripts/shared-nav.js"></script>
+<script src="../scripts/grn.js"></script>
+</body>
+</html>
+

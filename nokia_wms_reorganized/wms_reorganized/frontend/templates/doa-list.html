@@ -1,0 +1,672 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOA List | Nokia WMS</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="../styling/shared.css">
+
+    <style>
+        /* â”€â”€ Status pill â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: .8rem;
+            font-weight: 500;
+            white-space: nowrap;
+            letter-spacing: .01em;
+        }
+        .pill-open   { background: #fef2f2; color: #b91c1c; }
+        .pill-closed { background: #f0fdf4; color: #15803d; }
+        .pill .badge-count {
+            background: #b91c1c;
+            color: #fff;
+            border-radius: 999px;
+            font-size: .7rem;
+            font-weight: 700;
+            padding: 1px 5px;
+            line-height: 1.4;
+        }
+
+        /* â”€â”€ Edit button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .btn-edit {
+            border: none;
+            background: transparent;
+            color: var(--primary);
+            font-size: .95rem;
+            padding: 5px 7px;
+            border-radius: var(--radius-sm);
+            transition: background .15s;
+            cursor: pointer;
+        }
+        .btn-edit:hover    { background: var(--primary-soft); }
+        .btn-edit:disabled { opacity: .3; cursor: not-allowed; }
+
+        /* â”€â”€ Filter bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .filter-row .form-select,
+        .filter-row .form-control {
+            min-height: 38px;
+            height: 38px;
+            font-size: .875rem;
+            border-radius: var(--radius-md) !important;
+            padding: 6px 12px;
+        }
+
+        .filter-select { width: 136px; }
+
+        .filter-search {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: #fff;
+            height: 38px;
+            padding: 0 10px;
+            gap: 6px;
+            min-width: 180px;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .filter-search:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+        }
+        .filter-search i  { color: var(--muted-light); font-size: .85rem; }
+        .filter-search input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: .875rem;
+            color: var(--text);
+            width: 140px;
+            font-family: Calibri, Inter, 'Segoe UI', sans-serif;
+        }
+
+        .status-toggle {
+            display: flex;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            height: 38px;
+            background: #fff;
+        }
+        .status-toggle button {
+            border: none;
+            background: transparent;
+            padding: 0 16px;
+            font-size: .875rem;
+            font-weight: 500;
+            color: var(--muted);
+            cursor: pointer;
+            transition: background .15s, color .15s;
+            height: 100%;
+        }
+        .status-toggle button.active {
+            background: var(--primary);
+            color: #fff;
+            font-weight: 600;
+        }
+        .status-toggle button:not(.active):hover {
+            background: var(--bg-subtle);
+            color: var(--text);
+        }
+
+        .btn-clear-filters {
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: var(--radius-md);
+            height: 38px;
+            padding: 0 14px;
+            font-size: .845rem;
+            font-weight: 500;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: border-color .15s, color .15s, background .15s;
+            white-space: nowrap;
+        }
+        .btn-clear-filters:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background: var(--danger-soft);
+        }
+
+        .btn-raise-doa {
+            margin-left: auto;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            height: 38px;
+            padding: 0 18px;
+            font-size: .875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: background .15s, box-shadow .15s, transform .12s;
+            box-shadow: 0 1px 4px rgba(37,99,235,.2);
+            cursor: pointer;
+        }
+        .btn-raise-doa:hover {
+            background: var(--primary-hover);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(37,99,235,.28);
+            transform: translateY(-1px);
+        }
+
+        /* â”€â”€ Table overrides â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        #doaListTable thead th:first-child { width: 50px; }
+        #doaListTable thead th:last-child  { width: 70px; text-align: center; }
+        #doaListTable tbody td:last-child  { text-align: center; }
+
+        /* Remove DataTables default search box (we have our own) */
+        .dataTables_filter { display: none !important; }
+        .dataTables_length { margin-bottom: 8px; }
+        .dataTables_length label { font-size: .845rem; color: var(--muted); }
+
+        /* â”€â”€ Overlay backdrop â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .doa-overlay-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,.28);
+            z-index: 1040;
+        }
+        .doa-overlay-backdrop.show { display: block; }
+
+        /* â”€â”€ Overlay panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .doa-overlay {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            max-height: 80vh;
+            background: #fff;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -8px 32px rgba(15,23,42,.12);
+            z-index: 1050;
+            overflow-y: auto;
+            padding: 24px 32px 32px;
+        }
+        .doa-overlay.show { display: block; animation: slideUp .2s ease; }
+
+        @keyframes slideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        /* â”€â”€ Overlay header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .overlay-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .overlay-header h4 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--heading);
+            margin: 0 0 3px;
+        }
+        .overlay-header small { color: var(--muted); font-size: .845rem; }
+        .overlay-header-right { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+        .btn-close-overlay {
+            border: none;
+            background: var(--bg-subtle);
+            border-radius: var(--radius-sm);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--muted);
+            transition: background .15s, color .15s;
+        }
+        .btn-close-overlay:hover { background: var(--danger-soft); color: var(--danger); }
+
+        .btn-save-changes {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 6px 16px;
+            font-size: .845rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-save-changes:hover { background: var(--primary-hover); }
+
+        /* â”€â”€ Overlay detail badges â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .overlay-detail-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .overlay-detail-badge {
+            background: var(--bg-subtle);
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 3px 10px;
+            font-size: .8rem;
+            font-weight: 500;
+        }
+
+        /* â”€â”€ Workflow stepper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .workflow-stepper {
+            display: flex;
+            align-items: center;
+            margin: 0 0 24px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .wf-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            min-width: 60px;
+        }
+        .wf-step-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: var(--bg-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--muted-light);
+            transition: border-color .2s, background .2s, color .2s;
+        }
+        .wf-step.done .wf-step-icon {
+            border-color: var(--success);
+            background: var(--success-soft);
+            color: var(--success);
+        }
+        .wf-step.current .wf-step-icon {
+            border-color: var(--primary);
+            background: var(--primary-soft);
+            color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37,99,235,.1);
+        }
+        .wf-step-label {
+            font-size: .72rem;
+            font-weight: 500;
+            color: var(--muted-light);
+            text-align: center;
+            max-width: 56px;
+            line-height: 1.3;
+        }
+        .wf-step.done    .wf-step-label { color: var(--success); font-weight: 600; }
+        .wf-step.current .wf-step-label { color: var(--primary); font-weight: 600; }
+        .wf-connector {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            min-width: 16px;
+            margin-bottom: 24px;
+            transition: background .2s;
+        }
+        .wf-connector.done { background: var(--success); }
+
+        /* â”€â”€ Overlay fields â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .overlay-fields { margin-top: 4px; }
+        .overlay-fields .form-label { font-size: .845rem; font-weight: 500; color: var(--muted); }
+        .overlay-fields .form-control,
+        .overlay-fields .form-select {
+            min-height: 40px;
+            font-size: .9rem;
+            border-radius: var(--radius-md) !important;
+        }
+        .overlay-section-label {
+            font-size: .78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--muted-light);
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        /* â”€â”€ Overlay footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+        .overlay-footer {
+            display: flex;
+            align-items: center;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            gap: 10px;
+        }
+        .overlay-readonly-note {
+            color: var(--muted);
+            font-size: .845rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-fill-next {
+            margin-left: auto;
+            background: #16a34a;
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 8px 18px;
+            font-size: .875rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .15s, transform .12s;
+        }
+        .btn-fill-next:hover { background: #15803d; transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+<div class="app-wrapper">
+
+    <!-- SIDEBAR (patched by script) -->
+    <aside class="sidebar" data-active-section="transactions" data-active-page="doa-list">
+        <div class="sidebar-header">
+            <a class="brand-mark" href="dashboard.html" aria-label="Nokia WMS Dashboard">
+                <img src="../assets/logos/logo.png" alt="Nokia Logo">
+            </a>
+            <button id="toggleSidebar" type="button" aria-label="Toggle sidebar">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item" data-section="dashboard">
+                <a href="dashboard.html"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+            </li>
+            <li class="has-submenu active-parent" data-section="transactions">
+                <div class="menu-title">
+                    <div><i class="bi bi-arrow-repeat"></i><span>Transactions</span></div>
+                    <i class="bi bi-chevron-down arrow"></i>
+                </div>
+                <ul class="submenu active">
+                    <li><a href="grn.html">GRN</a></li>
+                    <li><a href="stn.html">STN</a></li>
+                    <li><a href="dc-out.html">DC OUT</a></li>
+                    <li><a href="dc-in.html">DC IN</a></li>
+                    <li><a href="iut.html">IUT</a></li>
+                    <li class="has-sub-submenu active-link active-sub-parent" data-page="doa-list">
+                        <a href="doa-list.html" class="d-flex align-items-center justify-content-between pe-2">
+                            <span>DOA List</span>
+                            <i class="bi bi-chevron-down arrow" style="font-size:.72rem;"></i>
+                        </a>
+                        <ul class="sub-submenu active">
+                            <li><a href="doa.html">Raise DOA</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="transaction-list.html">Transaction List</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu" data-section="masters">
+                <div class="menu-title">
+                    <div><i class="bi bi-box-seam"></i><span>Masters</span></div>
+                    <i class="bi bi-chevron-down arrow"></i>
+                </div>
+                <ul class="submenu">
+                    <li><a href="project-list.html">Project List</a></li>
+                    <li><a href="cost-center-list.html">Cost Center List</a></li>
+                    <li><a href="goods-master.html">Goods Master</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu" data-section="reports">
+                <div class="menu-title">
+                    <div><i class="bi bi-file-earmark-bar-graph"></i><span>Stock Reports</span></div>
+                    <i class="bi bi-chevron-down arrow"></i>
+                </div>
+                <ul class="submenu">
+                    <li><a href="stock-summary.html">Summary</a></li>
+                    <li><a href="stock-report.html">Report</a></li>
+                    <li><a href="stock-aging.html">Aging</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu" data-section="ledgers">
+                <div class="menu-title">
+                    <div><i class="bi bi-journal-bookmark"></i><span>Ledgers</span></div>
+                    <i class="bi bi-chevron-down arrow"></i>
+                </div>
+                <ul class="submenu">
+                    <li><a href="customer-ledger.html">Customer</a></li>
+                    <li><a href="supplier-ledger.html">Supplier</a></li>
+                    <li><a href="vendor-ledger.html">Vendor</a></li>
+                    <li><a href="store-ledger.html">Store</a></li>
+                    <li><a href="others-sto-ledger.html">Others/STO</a></li>
+                </ul>
+            </li>
+            <li class="has-submenu" data-section="projects">
+                <div class="menu-title">
+                    <div><i class="bi bi-folder"></i><span>Projects</span></div>
+                    <i class="bi bi-chevron-down arrow"></i>
+                </div>
+                <ul class="submenu">
+                    <li><a href="project-list.html">Project List</a></li>
+                    <li><a href="site-list.html">Site List</a></li>
+                </ul>
+            </li>
+            <li class="nav-item" data-section="documents">
+                <a href="documents.html"><i class="bi bi-file-earmark-text"></i><span>Documents</span></a>
+            </li>
+            <li class="nav-item" data-section="bulk">
+                <a href="bulk-uploads.html"><i class="bi bi-upload"></i><span>Bulk Uploads</span></a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- PAGE TOP -->
+        <div class="page-top">
+            <div>
+                <h1>DOA List</h1>
+                <p>Manage Dead On Arrival requests</p>
+            </div>
+            <div class="header-actions">
+                <div class="user-profile">
+                    <div class="avatar">KM</div>
+                    <div>
+                        <h6>Kanishak Mahajan</h6>
+                        <small>Warehouse Manager</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE CARD -->
+        <div class="table-card">
+
+            <!-- FILTER ROW -->
+            <div class="filter-row">
+                <select class="form-select filter-select" id="filterAccount">
+                    <option value="">Account</option>
+                    <option>Airtel</option>
+                    <option>Reliance Jio</option>
+                    <option>Vodafone</option>
+                </select>
+
+                <select class="form-select filter-select" id="filterCustomer">
+                    <option value="">Customer</option>
+                    <option>Bharti Airtel</option>
+                    <option>Reliance Jio</option>
+                    <option>Vodafone</option>
+                    <option>BSNL</option>
+                </select>
+
+                <select class="form-select filter-select" id="filterProductBU">
+                    <option value="">Product BU</option>
+                    <option>MN</option>
+                    <option>CNS</option>
+                </select>
+
+                <select class="form-select filter-select" id="filterProduct">
+                    <option value="">Product</option>
+                    <option>Router X100</option>
+                    <option>Fiber Module</option>
+                    <option>ONT ZX200</option>
+                    <option>Switch S400</option>
+                </select>
+
+                <div class="filter-search">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="filterISO" placeholder="Search by ISO">
+                </div>
+
+                <div class="status-toggle">
+                    <button id="btnFilterOpen"   class="active" data-filter="Open">Open</button>
+                    <button id="btnFilterClosed" data-filter="Closed">Closed</button>
+                </div>
+
+                <button class="btn-clear-filters" id="btnClearFilters" title="Clear all filters">
+                    <i class="bi bi-x-circle"></i> Clear
+                </button>
+
+                <a href="doa.html" class="btn-raise-doa">
+                    <i class="bi bi-plus-lg"></i> Raise DOA
+                </a>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-responsive">
+                <table id="doaListTable" class="table table-hover align-middle" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Sl.</th>
+                            <th>Product</th>
+                            <th>DOA ID</th>
+                            <th>ISO Number</th>
+                            <th>Status</th>
+                            <th>Quantity</th>
+                            <th>Created at</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="doaTableBody">
+                        <!-- rows injected by doa-list.js -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- OVERLAY BACKDROP -->
+<div class="doa-overlay-backdrop" id="overlayBackdrop"></div>
+
+<!-- EDIT OVERLAY -->
+<div class="doa-overlay" id="doaEditOverlay">
+
+    <div class="overlay-header">
+        <div>
+            <h4 id="overlayTitle">â€“</h4>
+            <small id="overlayMeta">â€“</small>
+        </div>
+        <div class="overlay-header-right">
+            <button class="btn-save-changes" id="btnSaveChanges" style="display:none;">
+                <i class="bi bi-floppy"></i> Save Changes
+            </button>
+            <button class="btn-close-overlay" id="closeOverlay" aria-label="Close">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Summary badges -->
+    <div class="overlay-detail-row" id="overlayDetailRow"></div>
+
+    <!-- Editable fields -->
+    <div class="overlay-fields" id="overlayFormFields">
+        <div class="overlay-section-label">DOA Details</div>
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Product</label>
+                <input type="text" class="form-control" id="oProduct">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">DOA ID</label>
+                <input type="text" class="form-control" id="oDOAID">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">ISO Number</label>
+                <input type="text" class="form-control" id="oISO">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="oQty">
+            </div>
+        </div>
+        <div class="overlay-section-label">Reference Numbers</div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">RMA Number</label>
+                <input type="text" class="form-control" id="oRMA">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">PR Number</label>
+                <input type="text" class="form-control" id="oPR">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">OO Number</label>
+                <input type="text" class="form-control" id="oOO">
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflow stepper (visual only - not clickable) -->
+    <div class="workflow-stepper" id="workflowStepper"></div>
+
+    <!-- Footer -->
+    <div class="overlay-footer">
+        <span class="overlay-readonly-note" id="overlayReadOnlyNote" style="display:none;">
+            <i class="bi bi-lock-fill"></i> This DOA is closed and read-only.
+        </span>
+        <button class="btn-fill-next" id="btnFillNext" style="display:none;">
+            <i class="bi bi-arrow-right-circle"></i> Fill next
+        </button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../scripts/shared-nav.js"></script>
+<script src="../scripts/doa-list.js"></script>
+</body>
+</html>
+
+

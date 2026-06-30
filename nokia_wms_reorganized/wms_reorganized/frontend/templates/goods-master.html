@@ -1,0 +1,569 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goods Master</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- DataTables -->
+    <link rel="stylesheet"
+        href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+
+    <link rel="stylesheet" href="../styling/goodsmaster.css">
+    <link rel="stylesheet" href="../styling/shared.css">
+</head>
+
+<body>
+
+    <div class="app-wrapper">
+        <aside class="sidebar" data-active-section="masters">
+
+            <div class="sidebar-header">
+                <a class="brand-mark" href="dashboard.html" aria-label="Nokia WMS Dashboard">
+                    <img src="../assets/logos/logo.png" alt="Nokia Logo">
+                </a>
+
+                <button id="toggleSidebar" type="button" aria-label="Toggle sidebar">
+                    <i class="bi bi-list"></i>
+                </button>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item" data-section="dashboard">
+                    <a href="dashboard.html">
+                        <i class="bi bi-grid"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="has-submenu" data-section="transactions">
+                    <div class="menu-title">
+                        <div>
+                            <i class="bi bi-arrow-repeat"></i>
+                            <span>Transactions</span>
+                        </div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="grn.html">GRN</a></li>
+                        <li><a href="stn.html">STN</a></li>
+                        <li><a href="dc-out.html">DC OUT</a></li>
+                        <li><a href="dc-in.html">DC IN</a></li>
+                        <li><a href="iut.html">IUT</a></li>
+                        <li class="has-sub-submenu" data-page="doa-list">
+                            <a href="doa-list.html" class="d-flex align-items-center justify-content-between pe-2">
+                                <span>DOA List</span>
+                                <i class="bi bi-chevron-down arrow" style="font-size:.72rem;"></i>
+                            </a>
+                            <ul class="sub-submenu">
+                                <li><a href="doa.html">Raise DOA</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="transaction-list.html">Transaction List</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu active-parent" data-section="masters">
+                    <div class="menu-title">
+                        <div>
+                            <i class="bi bi-box-seam"></i>
+                            <span>Masters</span>
+                        </div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu active">
+                        <li><a href="project-list.html">Project List</a></li>
+                        <li><a href="cost-center-list.html">Cost Center List</a></li>
+                        <li class="active-link"><a href="goods-master.html">Goods Master</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu" data-section="reports">
+                    <div class="menu-title">
+                        <div>
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                            <span>Stock Reports</span>
+                        </div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="stock-summary.html">Summary</a></li>
+                        <li><a href="stock-report.html">Report</a></li>
+                        <li><a href="stock-aging.html">Aging</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu" data-section="ledgers">
+                    <div class="menu-title">
+                        <div>
+                            <i class="bi bi-journal-bookmark"></i>
+                            <span>Ledgers</span>
+                        </div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="customer-ledger.html">Customer</a></li>
+                        <li><a href="supplier-ledger.html">Supplier</a></li>
+                        <li><a href="vendor-ledger.html">Vendor</a></li>
+                        <li><a href="store-ledger.html">Store</a></li>
+                        <li><a href="others-sto-ledger.html">Others/STO</a></li>
+                    </ul>
+                </li>
+
+                <li class="has-submenu" data-section="projects">
+                    <div class="menu-title">
+                        <div>
+                            <i class="bi bi-folder"></i>
+                            <span>Projects</span>
+                        </div>
+                        <i class="bi bi-chevron-down arrow"></i>
+                    </div>
+                    <ul class="submenu">
+                        <li><a href="project-list.html">Project List</a></li>
+                        <li><a href="site-list.html">Site List</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item" data-section="documents">
+                    <a href="documents.html"><i class="bi bi-file-earmark-text"></i><span>Documents</span></a>
+                </li>
+
+                <li class="nav-item" data-section="bulk">
+                    <a href="bulk-uploads.html"><i class="bi bi-upload"></i><span>Bulk Uploads</span></a>
+                </li>
+            </ul>
+
+        </aside>
+
+        <main class="main-content">
+
+            <div class="container-fluid py-4">
+
+        <!-- HEADER -->
+
+        <div class="page-header d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h2 class="fw-bold">Goods Master</h2>
+                <p class="text-muted mb-0">
+                    Manage inventory items and materials
+                </p>
+            </div>
+
+            <button
+                class="btn btn-primary px-4"
+                data-bs-toggle="modal"
+                data-bs-target="#goodsModal">
+
+                <i class="bi bi-plus-lg"></i>
+                Add New Goods
+
+            </button>
+
+        </div>
+
+        <!-- STATS -->
+
+        <div class="row mb-4">
+
+            <div class="col-md-3">
+
+                <div class="stat-card">
+
+                    <h6>Total Goods</h6>
+                    <h3>324</h3>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="stat-card">
+
+                    <h6>Active Items</h6>
+                    <h3>301</h3>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="stat-card">
+
+                    <h6>Categories</h6>
+                    <h3>18</h3>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <div class="stat-card">
+
+                    <h6>Recently Added</h6>
+                    <h3>12</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body">
+
+                <table
+                    id="goodsTable"
+                    class="table table-hover align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>Article ID</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Weight</th>
+                            <th>Volume</th>
+                            <th>UOM</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>ART-1001</td>
+                            <td>Router X100</td>
+                            <td>Network Equipment</td>
+                            <td>2.4 Kg</td>
+                            <td>0.12 mÂ³</td>
+                            <td>PCS</td>
+
+                            <td>
+                                <span class="status active">
+                                    Active
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <button class="btn btn-light btn-sm">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+
+                                <button class="btn btn-light btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- ADD GOODS MODAL -->
+
+    <div
+        class="modal fade"
+        id="goodsModal">
+
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+
+                        Add New Goods
+
+                    </h5>
+
+                    <button
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <form id="goodsForm">
+
+                        <div class="row g-4">
+
+                            <!-- CATEGORY -->
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+
+                                    Goods Category
+
+                                </label>
+
+                                <select class="form-select">
+
+                                    <option>Select Category</option>
+
+                                    <option>
+                                        Network Equipment
+                                    </option>
+
+                                    <option>
+                                        Fiber Components
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <!-- ARTICLE -->
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+
+                                    Article ID
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control">
+
+                            </div>
+
+                            <!-- WEIGHT -->
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+
+                                    Weight (Kg)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control">
+
+                            </div>
+
+                            <!-- DESCRIPTION -->
+
+                            <div class="col-md-8">
+
+                                <label class="form-label">
+
+                                    Description
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control">
+
+                            </div>
+
+                            <!-- UOM -->
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+
+                                    UOM
+
+                                </label>
+
+                                <select class="form-select">
+
+                                    <option>PCS</option>
+                                    <option>BOX</option>
+                                    <option>UNIT</option>
+
+                                </select>
+
+                            </div>
+
+                            <!-- DIMENSIONS -->
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+
+                                    Length (cm)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control">
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+
+                                    Breadth (cm)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control">
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+
+                                    Height (cm)
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control">
+
+                            </div>
+
+                            <!-- HSN -->
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    HSN / SAC
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control">
+
+                            </div>
+
+                            <!-- GST -->
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    GST %
+
+                                </label>
+
+                                <div class="gst-options">
+
+                                    <label>
+                                        <input type="radio" name="gst">
+                                        0%
+                                    </label>
+
+                                    <label>
+                                        <input type="radio" name="gst">
+                                        5%
+                                    </label>
+
+                                    <label>
+                                        <input type="radio" name="gst">
+                                        12%
+                                    </label>
+
+                                    <label>
+                                        <input type="radio" name="gst">
+                                        18%
+                                    </label>
+
+                                    <label>
+                                        <input type="radio" name="gst">
+                                        28%
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+
+                        Cancel
+
+                    </button>
+
+                    <button
+                        class="btn btn-primary">
+
+                        Save Goods
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JS -->
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="../scripts/shared-nav.js"></script>
+    <script src="../scripts/goodsmaster.js"></script>
+
+</body>
+
+</html>
+
+
+
