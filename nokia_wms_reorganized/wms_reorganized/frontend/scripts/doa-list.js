@@ -7,6 +7,31 @@
     { key: 'closed', label: 'Closed!', icon: 'bi-check-circle' }
 ];
 
+function bindCustomLengthSelector(table) {
+    const $lengthSelect = $(table.table().container()).find('.dataTables_length select');
+    if (!$lengthSelect.length) return;
+
+    $lengthSelect.off('change.customLength').on('change.customLength', function () {
+        const selectedText = $(this).find('option:selected').text();
+        if (selectedText !== 'Custom') return;
+
+        const currentLength = table.page.len();
+        const promptValue = prompt('Enter number of rows to display:', currentLength);
+        if (promptValue === null) {
+            $(this).val(currentLength);
+            return;
+        }
+
+        const parsedValue = parseInt(promptValue, 10);
+        if (!Number.isNaN(parsedValue) && parsedValue > 0) {
+            table.page.len(parsedValue).draw();
+        } else {
+            alert('Please enter a valid number greater than 0.');
+            $(this).val(currentLength);
+        }
+    });
+}
+
 const NEXT_STEP_ROUTE = {
     doa: '../templates/grn.html?mode=doa&id=',
     inventory: '../templates/dc-out.html?mode=doa&id=',
@@ -106,11 +131,20 @@ function buildTable(data) {
         lengthChange: true,
         ordering: true,
         info: true,
-        dom: 'rt<"wms-table-footer"lip>',
+        dom: '<"d-flex justify-content-between align-items-center flex-wrap gap-2"lB><"table-responsive"t>ip',
+        lengthChange: true,
+        lengthMenu: [[10, 20, 25, -1], ['10', '20', '25', 'Custom']],
+        buttons: [
+            { extend: 'copy', text: '<i class="bi bi-clipboard"></i> Copy', className: 'btn btn-secondary btn-sm me-1' },
+            { extend: 'csv', text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV', className: 'btn btn-success btn-sm me-1' },
+            { extend: 'excel', text: '<i class="bi bi-file-earmark-excel"></i> Excel', className: 'btn btn-success btn-sm me-1' },
+            { extend: 'pdf', text: '<i class="bi bi-file-earmark-pdf"></i> PDF', className: 'btn btn-danger btn-sm me-1' },
+            { extend: 'print', text: '<i class="bi bi-printer"></i> Print', className: 'btn btn-secondary btn-sm' }
+        ],
         language: {
             emptyTable: 'No records found.',
             zeroRecords: 'No matching records.',
-            lengthMenu: 'Rows _MENU_',
+            pageLength: 10,
             info: '_START_-_END_ of _TOTAL_',
             infoEmpty: 'No entries',
             paginate: {
@@ -122,6 +156,8 @@ function buildTable(data) {
             { orderable: false, targets: [0, 4, 7] }
         ]
     });
+
+    bindCustomLengthSelector(dtInstance);
 
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
         new bootstrap.Tooltip(el, { placement: 'top', trigger: 'hover' });

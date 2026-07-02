@@ -17,6 +17,10 @@
     <link rel="stylesheet"
         href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 
+    <!-- DataTables Buttons -->
+    <link rel="stylesheet"
+        href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+
     <link rel="stylesheet" href="../styling/goodsmaster.css">
     <link rel="stylesheet" href="../styling/shared.css">
 </head>
@@ -170,115 +174,43 @@
 
         </div>
 
-        <!-- STATS -->
-
-        <div class="row mb-4">
-
-            <div class="col-md-3">
-
-                <div class="stat-card">
-
-                    <h6>Total Goods</h6>
-                    <h3>324</h3>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="stat-card">
-
-                    <h6>Active Items</h6>
-                    <h3>301</h3>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="stat-card">
-
-                    <h6>Categories</h6>
-                    <h3>18</h3>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="stat-card">
-
-                    <h6>Recently Added</h6>
-                    <h3>12</h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
         <!-- TABLE -->
 
         <div class="card border-0 shadow-sm">
 
             <div class="card-body">
 
-                <table
-                    id="goodsTable"
-                    class="table table-hover align-middle">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table
+                        id="goodsTable"
+                        class="table table-striped table-bordered"
+                        style="width:100%">
 
-                    <thead>
+                        <thead>
 
-                        <tr>
-                            <th>Article ID</th>
-                            <th>Description</th>
-                            <th>Category</th>
-                            <th>Weight</th>
-                            <th>Volume</th>
-                            <th>UOM</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
+                            <tr>
+                                <th>SL No</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Article ID</th>
+                                <th>Weight (Kg)</th>
+                                <th>Volume (m³)</th>
+                                <th>Length (cm)</th>
+                                <th>Breadth (cm)</th>
+                                <th>Height (cm)</th>
+                                <th>HSN Code</th>
+                                <th>UOM</th>
+                                <th>GST %</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
 
-                    </thead>
+                        </thead>
 
-                    <tbody>
+                        <tbody></tbody>
 
-                        <tr>
-
-                            <td>ART-1001</td>
-                            <td>Router X100</td>
-                            <td>Network Equipment</td>
-                            <td>2.4 Kg</td>
-                            <td>0.12 mÂ³</td>
-                            <td>PCS</td>
-
-                            <td>
-                                <span class="status active">
-                                    Active
-                                </span>
-                            </td>
-
-                            <td>
-
-                                <button class="btn btn-light btn-sm">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-
-                                <button class="btn btn-light btn-sm">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                    </table>
+                </div>
 
             </div>
 
@@ -320,6 +252,40 @@
 
                         <div class="row g-4">
 
+                            <!-- DESCRIPTION -->
+
+                            <div class="col-md-8">
+
+                                <label class="form-label">
+
+                                    Description
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="descriptionInput">
+
+                            </div>
+
+                            <!-- ARTICLE -->
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+
+                                    Article ID (Part Code)
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="partCodeInput">
+
+                            </div>
+
                             <!-- CATEGORY -->
 
                             <div class="col-md-4">
@@ -330,9 +296,9 @@
 
                                 </label>
 
-                                <select class="form-select">
+                                <select class="form-select" id="categorySelect">
 
-                                    <option>Select Category</option>
+                                    <option value="">Select Category</option>
 
                                     <option>
                                         Network Equipment
@@ -346,54 +312,6 @@
 
                             </div>
 
-                            <!-- ARTICLE -->
-
-                            <div class="col-md-4">
-
-                                <label class="form-label">
-
-                                    Article ID
-
-                                </label>
-
-                                <input
-                                    type="text"
-                                    class="form-control">
-
-                            </div>
-
-                            <!-- WEIGHT -->
-
-                            <div class="col-md-4">
-
-                                <label class="form-label">
-
-                                    Weight (Kg)
-
-                                </label>
-
-                                <input
-                                    type="number"
-                                    class="form-control">
-
-                            </div>
-
-                            <!-- DESCRIPTION -->
-
-                            <div class="col-md-8">
-
-                                <label class="form-label">
-
-                                    Description
-
-                                </label>
-
-                                <input
-                                    type="text"
-                                    class="form-control">
-
-                            </div>
-
                             <!-- UOM -->
 
                             <div class="col-md-4">
@@ -404,13 +322,18 @@
 
                                 </label>
 
-                                <select class="form-select">
+                                <select class="form-select" id="uomSelect">
 
-                                    <option>PCS</option>
-                                    <option>BOX</option>
-                                    <option>UNIT</option>
+                                    <option value="Numbers">Numbers</option>
+                                    <option value="Meter">Meter</option>
+                                    <option value="cm">cm</option>
+                                    <option value="other">Other</option>
 
                                 </select>
+
+                                <div id="uomOtherContainer" style="display:none; margin-top: 5px;">
+                                    <input type="text" class="form-control" id="uomOtherInput" placeholder="Enter UOM">
+                                </div>
 
                             </div>
 
@@ -426,7 +349,8 @@
 
                                 <input
                                     type="number"
-                                    class="form-control">
+                                    class="form-control"
+                                    id="lengthInput">
 
                             </div>
 
@@ -440,7 +364,8 @@
 
                                 <input
                                     type="number"
-                                    class="form-control">
+                                    class="form-control"
+                                    id="breadthInput">
 
                             </div>
 
@@ -454,7 +379,8 @@
 
                                 <input
                                     type="number"
-                                    class="form-control">
+                                    class="form-control"
+                                    id="heightInput">
 
                             </div>
 
@@ -464,13 +390,14 @@
 
                                 <label class="form-label">
 
-                                    HSN / SAC
+                                    HSN Code
 
                                 </label>
 
                                 <input
                                     type="text"
-                                    class="form-control">
+                                    class="form-control"
+                                    id="hsnCodeInput">
 
                             </div>
 
@@ -484,34 +411,34 @@
 
                                 </label>
 
-                                <div class="gst-options">
-
-                                    <label>
-                                        <input type="radio" name="gst">
-                                        0%
-                                    </label>
-
-                                    <label>
-                                        <input type="radio" name="gst">
-                                        5%
-                                    </label>
-
-                                    <label>
-                                        <input type="radio" name="gst">
-                                        12%
-                                    </label>
-
-                                    <label>
-                                        <input type="radio" name="gst">
-                                        18%
-                                    </label>
-
-                                    <label>
-                                        <input type="radio" name="gst">
-                                        28%
-                                    </label>
-
+                                <select class="form-select" id="gstSelect">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="12">12%</option>
+                                    <option value="18">18%</option>
+                                    <option value="28">28%</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <div id="gstOtherContainer" style="display:none; margin-top: 5px;">
+                                    <input type="text" class="form-control" id="gstOtherInput" placeholder="Enter GST %">
                                 </div>
+
+                            </div>
+
+                            <!-- STATUS -->
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+
+                                    Status
+
+                                </label>
+
+                                <select class="form-select" id="statusSelect">
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
 
                             </div>
 
@@ -555,6 +482,20 @@
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

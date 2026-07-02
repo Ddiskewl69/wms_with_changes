@@ -580,11 +580,25 @@ table.dataTable thead th,
     cursor: not-allowed;
 }
 
+.dataTables_wrapper .dataTables_length {
+    margin: 0 0 10px;
+}
+
+.dataTables_wrapper .dataTables_length label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0;
+    font-size: .825rem;
+    color: var(--muted);
+}
+
 .dataTables_length select {
     border: 1px solid var(--border) !important;
     border-radius: var(--radius-sm) !important;
     padding: 4px 8px;
     font-size: .825rem;
+    min-width: 72px;
 }
 
 /* ── Status pills ──────────────────────────────────────── */

@@ -1,14 +1,50 @@
-﻿$(document).ready(function () {
+﻿function bindCustomLengthSelector(table) {
+    const $lengthSelect = $(table.table().container()).find('.dataTables_length select');
+    if (!$lengthSelect.length) return;
+
+    $lengthSelect.off('change.customLength').on('change.customLength', function () {
+        const selectedText = $(this).find('option:selected').text();
+        if (selectedText !== 'Custom') return;
+
+        const currentLength = table.page.len();
+        const promptValue = prompt('Enter number of rows to display:', currentLength);
+        if (promptValue === null) {
+            $(this).val(currentLength);
+            return;
+        }
+
+        const parsedValue = parseInt(promptValue, 10);
+        if (!Number.isNaN(parsedValue) && parsedValue > 0) {
+            table.page.len(parsedValue).draw();
+        } else {
+            alert('Please enter a valid number greater than 0.');
+            $(this).val(currentLength);
+        }
+    });
+}
+
+$(document).ready(function () {
     $('#doaTable').DataTable({
-        pageLength: 5,
+        pageLength: 10,
         responsive: true,
-        lengthChange: false,
+        dom: '<"d-flex justify-content-between align-items-center flex-wrap gap-2"lB><"table-responsive"t>ip',
+        lengthMenu: [[10, 20, 25, -1], ['10', '20', '25', 'Custom']],
+        lengthChange: true,
+        buttons: [
+            { extend: 'copy', text: '<i class="bi bi-clipboard"></i> Copy', className: 'btn btn-secondary btn-sm me-1' },
+            { extend: 'csv', text: '<i class="bi bi-file-earmark-spreadsheet"></i> CSV', className: 'btn btn-success btn-sm me-1' },
+            { extend: 'excel', text: '<i class="bi bi-file-earmark-excel"></i> Excel', className: 'btn btn-success btn-sm me-1' },
+            { extend: 'pdf', text: '<i class="bi bi-file-earmark-pdf"></i> PDF', className: 'btn btn-danger btn-sm me-1' },
+            { extend: 'print', text: '<i class="bi bi-printer"></i> Print', className: 'btn btn-secondary btn-sm' }
+        ],
         ordering: true,
         language: {
             search: '',
             searchPlaceholder: 'Search DOA...'
         }
     });
+
+    bindCustomLengthSelector($('#doaTable').DataTable());
 
     $('.kpi-card').on('click', function () {
         $('.kpi-card').removeClass('selected');
